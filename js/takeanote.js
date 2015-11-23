@@ -17,8 +17,8 @@ https://github.com/jquery-boilerplate/jquery-boilerplate/wiki/How-did-we-get-her
 		  	'footer'    : 'takeanote-footer',
 		  	'count'     : 'note-count',
 		  },
-	      'markupBottom'   : '<div class="takeanote-header">Take a Note <div class="note-count">0</div></div><div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>&copy; Destiny Developers</p></div>',
-	      'markupTop'      : '<div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>&copy; Destiny Developers</p></div><div class="takeanote-header">Take a Note<div class="note-count">0</div></div>',
+	      'markupBottom'   : '<div class="takeanote-header">Take a Note <div class="note-count">0</div></div><div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>Creaed By: Amberish Raj</p></div>',
+	      'markupTop'      : '<div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>Creaed By: Amberish Raj</p></div><div class="takeanote-header">Take a Note<div class="note-count">0</div></div>',
 	    }, $.fn.takeanote.defaults, options);
 
 	    settings.markupBottomSetting = function(){
