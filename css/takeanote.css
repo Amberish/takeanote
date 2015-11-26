@@ -1,6 +1,3 @@
-body{
-	font-family: "monospace";
-}
 /*.note-container{
 	position: fixed;
 	width: 80%;
@@ -11,7 +8,7 @@ body{
 
 .takeanote-header{
 	/*float: right;*/
-	background: #B52D0F;
+	/*background: #B52D0F;*/
 	cursor: pointer;
 	padding: 0px 15px;
 	height: 40px;
@@ -65,4 +62,8 @@ body{
 .takeanote-footer p{
 	padding: 0px;
 	margin: 0px;
+}
+
+.note-element{
+	background: #CDCDCD;
 }

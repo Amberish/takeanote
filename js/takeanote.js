@@ -6,135 +6,199 @@ https://remysharp.com/2010/06/03/signs-of-a-poorly-written-jquery-plugin
 https://github.com/jquery-boilerplate/jquery-boilerplate/wiki/How-did-we-get-here%3F
 */
 ;(function ( $, window, undefined ) {
-	//Plugin Definition
-	$.fn.takeanote = function(options) {
-		//Setting goes here
-		var settings = $.extend( {
-		  'classes'        : {
-		  	'container' : 'note-container',
-		  	'header'    : 'takeanote-header',
-		  	'body'      : 'takeanote-body',
-		  	'footer'    : 'takeanote-footer',
-		  	'count'     : 'note-count',
-		  },
-	      'markupBottom'   : '<div class="takeanote-header">Take a Note <div class="note-count">0</div></div><div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>Creaed By: Amberish Raj</p></div>',
-	      'markupTop'      : '<div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>Creaed By: Amberish Raj</p></div><div class="takeanote-header">Take a Note<div class="note-count">0</div></div>',
-	    }, $.fn.takeanote.defaults, options);
 
-	    settings.markupBottomSetting = function(){
-	    	//Adjusting for bottom setings.
-	    	var height = parseInt(settings.containerHeight);
-			var heightTotal =  height + 30;
+	_UI = {
+		elements : {
+			'wrapper'   : 'note-container',
+			'header'    : 'takeanote-header',
+			'body'      : 'takeanote-body',
+			'footer'    : 'takeanote-footer',
+			'count'     : 'note-count',
+		},
+
+		markup : {
+			'top'      : '<div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>Created By: Amberish Raj</p></div><div class="takeanote-header">Take a Note<div class="note-count">0</div></div>',
+			'bottom'   : '<div class="takeanote-header">Take a Note <div class="note-count">0</div></div><div class="takeanote-body"><p>Here is note container</p></div><div class="takeanote-footer"><p>Created By: Amberish Raj</p></div>',
+		},
+		
+		/*Limit properties that can be changed. Only those properties can be changed hose are defined in this variable*/
+		properties : ['color', 'width', 'height', 'background'],
+
+		/*Default value of current alignment*/
+		align : 'top',
+
+		alignments : {
+			'top' : 'top',
+			'bottom' : 'bottom',
+		},
+
+		defaults : {
+			'top' : {
+				'header' : {
+					'background' : '#B52D0F',
+				},
+				'header-focus' : {
+					'background' : '#B52D0F',
+				}
+			},
+			'bottom' : {
+				'header' : {
+					'background' : '#B52D0F',
+				},
+				'header-focus' : {
+					'background' : '#B52D0F',
+				}
+			},					
+		},
+
+		forced : {
+			'top' : {
+				'header' : {
+					'radius' : '0px 0px 3px 3px',
+				},
+				'header-focus' : {
+					
+				},
+				'wrapper' : {
+					'position': 'fixed',
+					'width'   : '80%',
+					'margin'  :'0px auto',
+					'padding' : '0px',
+					'left'    :'10%',
+					/*'top'     : '-330px',*/
+				},
+			},
+			'bottom' : {
+				'header' : {
+					'radius' : '3px 3px 0px 0px',
+				},
+				'header-focus' : {
+					
+				},
+				'wrapper' : {
+					'position': 'fixed',
+					'width'   : '80%',
+					'margin'  :'0px auto',
+					'padding' : '0px',
+					'left'    :'10%',
+					/*'bottom'     : '-330px',*/
+				},
+			},				
+		},
+
+		/*Parameter store final style applied to the element*/
+		finalStyle : {},
+		/*
+		ui_params = {
+			header : {
+				'color' : 'red'
+			}
+		}
+		*/
+		init : function(object, alignment, ui_params){
+
+			/*Inserting markup*/
+			var markup = (alignment === 'top')?this.markup.top:this.markup.bottom;
+	    	object.attr({'class' : this.elements.wrapper});
+	    	object.append(markup);
+
+			/*Setting Alignment*/
+			this.setAlign(alignment);
+
+			/*Setting all css information in finalStyle variable*/
+			this.setFinalStyle(ui_params);
+
+			/*Finally applying those css to respective elements*/
+			this.applyCSS();
+
+			/*Bind header click event*/
+			this.bindHeaderClickAction();
+
+			return this;
+		},
+
+		setAlign : function(align){
+			this.align = align;
+		},
+
+		getAlign : function(){
+			return this.align;
+		},
+
+		setFinalStyle : function(ui_params){
+			//Setting header parameter
+			this.finalStyle.header = $.extend(ui_params.header, this.forced[this.getAlign()].header);
+			//Setting body parameter
+			this.finalStyle.body = $.extend(ui_params.body, this.forced[this.getAlign()].body);
+			//Setting footer parameter
+			this.finalStyle.footer = $.extend(ui_params.footer, this.forced[this.getAlign()].footer);
+			//Setting wrapper parameter
+			this.finalStyle.wrapper = $.extend(ui_params.wrapper, this.forced[this.getAlign()].wrapper);
+		},
+
+		getFinalStyle : function(){
+			return this.finalStyle;
+		},
+
+		/**
+		*This applyCSS method is used for applying finalStyle css to all the elements
+		**/
+		applyCSS : function(){
+			var style = this.getFinalStyle();
 			
-			//Setting body css
-			$('.' + settings.classes.body).css({'height' : height + 'px'});
-
-			//Setting header css
-			setHeaderCSS($('.' + settings.classes.header), { 
-				'header' : settings.header,
-				'headerHover' : settings.headerHover,
-			}, settings.location);			
+			//setting css for all elements			
+			$('.' + this.elements.header).css(style.header);
+			$('.' + this.elements.body).css(style.body);
+			$('.' + this.elements.footer).css(style.footer);
+			$('.' + this.elements.wrapper).css(style.wrapper);
 			
-			//Setting bottom value to negative(height + 30) to submerse container below screen
-			$('.' + settings.classes.container).css({'bottom' : (-heightTotal) + 'px'});			
-			params = {
-				'objectHeader'    : $('.' + settings.classes.header),
-				'objectContainer' : $('.' + settings.classes.container),
-				'height'          : height,
-				'heightTotal'     : heightTotal
-			};
-			headerClickAction(params, settings.location);
-	    };
+			/*Now hide panel by sending upward or downwards depending upon alignment*/
+			var locationValue = -(parseInt($('.' + this.elements.body).css('height')) + 30 ) + 'px';
 
-	    settings.markupTopSetting = function(){
-	    	//Adjusting for top setings.
-			var height = parseInt(settings.containerHeight);
-			var heightTotal =  height + 30;	
-			$('.' + settings.classes.body).css({'height' : height + 'px'});
+			var adjustCSS = '{' +
+							'"' + this.getAlign() + '" : "' + locationValue + '"'
+						 + '}';
+			jsonParam = $.parseJSON(adjustCSS);
+			$('.' + this.elements.wrapper).css(jsonParam);
+		},
 
-			//Setting header css
-			setHeaderCSS($('.' + settings.classes.header), { 
-				'header' : settings.header,
-				'headerHover' : settings.headerHover,
-			}, settings.location);
-
-			//Setting top value to negative(height + 30) to submerse container above screen
-			$('.' + settings.classes.container).css({'top' : (-heightTotal) + 'px'});			
-			params = {
-				'objectHeader'    : $('.' + settings.classes.header),
-				'objectContainer' : $('.' + settings.classes.container),
-				'height'          : height,
-				'heightTotal'     : heightTotal
-			};
-			headerClickAction(params, settings.location);
-	    };
-
-	    //set all settings to container.
-	    return this.each(function() {
-	    	var markup = (settings.location === 'top')?settings.markupTop:settings.markupBottom;
-	    	$(this).attr({'class' : settings.classes.container}).css({
-	    		//Default CSS for container
-	    		'position': 'fixed',
-				'width'   : '80%',
-				'margin'  :'0px auto',
-				'padding' : '0px',
-				'left'    :'10%'
-	    	});	    	
-	    	$(this).append(markup);
-	    	//Applying css settings as per location
-	    	(settings.location === 'top')?settings.markupTopSetting():settings.markupBottomSetting();
-	    });
+		bindHeaderClickAction : function(){
+			_UIActions.headerClick(this);
+		}
 	};
 
-	//Private functions
-	function setHeaderCSS(object, params, align){
-    	var headerColor = (typeof params.header.background === 'undefined' || params.header.background === null)?'#B52D0F':params.header.background;
-		var headerColorHover = (typeof params.headerHover.background === 'undefined' || params.headerHover.background === null)?headerColor:'#' + (parseInt(headerColor.substring(1), 16) + parseInt('ffdfa', 16)).toString(16);
-		var style, styleHover;
-
-		switch(align){
-			case 'top':
-				radius = '0px 0px 3px 3px';
-				break;
-
-			case 'bottom':
-			default:
-				radius = '3px 3px 0px 0px';
+	/*All User Interface Actions goes in this object*/
+	_UIActions = {
+		headerClick : function(uiobj){
+			//Click event for note header
+			$('.' + uiobj.elements.header).click(function(){
+				var heightTotal = -(parseInt($('.' + uiobj.elements.body).css('height')) + 30 ) + 'px';
+				var locationValue = ($('.' + uiobj.elements.wrapper).css(uiobj.align) === '0px')?heightTotal:'0px';
+				var string = '{' +
+								'"' + uiobj.getAlign() + '" : "' + locationValue + '"'
+							 + '}';
+				jsonParam = $.parseJSON(string);
+				
+				$('.' + uiobj.elements.wrapper).animate(jsonParam);
+			});
 		}
+	};
 
-		//params.header properties are stored her.
-		//To strictly force some style, pass in third object
-		//Default style in first object, header setting in second, force style-3rd object
-		style = $.extend({
-			'background' : headerColor
-		}, params.header, {
-			'border-radius'  : radius,
-		});
-
-		styleHover = $.extend({
-			'background'  : headerColorHover,
-		}, params.headerHover);
-
-		//Binding all css
-		object.css(style).mouseleave(function(){
-			$(this).css(style);
-		}).mouseenter(function(){
-			$(this).css(styleHover);
-		});		
+	var debug = function(param){
+		console.log(param);
 	}
 
-	function headerClickAction(params, location){
-		//Click event for note header
-		params.objectHeader.click(function(){
-			var locationValue = (params.objectContainer.css(location) === '0px')?(-params.heightTotal) + 'px':'0px';
-			var string = '{' +
-							'"' + location + '" : "' + locationValue + '"'
-						 + '}';
-			jsonParam = $.parseJSON(string);
-			
-			params.objectContainer.animate(jsonParam);
-		});
-	}
+	/*Takeanote Plugin Definition starts here.*/
+	$.fn.takeanote = function(options) {
+		//Setting goes here
+		var settings = $.extend( {}, $.fn.takeanote.defaults, options);	    
+	   
+	    //Initialize UI elements
+	    align = settings.location;
+    	style = settings.ui;
+    	_UI.init(this, align, style);
+    	
+	};
 
 	$.fn.takeanote.defaults = {
 		'location'	     : 'bottom',
@@ -147,19 +211,3 @@ https://github.com/jquery-boilerplate/jquery-boilerplate/wiki/How-did-we-get-her
 		}
 	};
 }(jQuery, window));
-
-
-$('.foo').takeanote({
-	//two locations 'top' an 'bottom'
-	'location' : 'bottom',
-	'containerHeight' : '400px',
-	//Define Header Css here, like color properties
-	'header' : {
-		//border radius will not override
-		'width' : '150px',
-		'border-radius'  : '10px',
-	},
-	'count' : {
-		'background' : '#97A719'
-	}
-});
