@@ -6,6 +6,32 @@
 	left:10%;
 }*/
 
+.note-container{
+	font-family: calibri;
+	z-index: 2;
+	/*Prohibit Selection*/
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.overlay {
+	position : fixed;
+	top      : 0px;
+	left     : 0px;
+	background : rgba(0, 0, 0, 0.5);
+	/*Prohibit selection*/
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .takeanote-header{
 	/*float: right;*/
 	/*background: #B52D0F;*/
@@ -15,6 +41,7 @@
 	line-height: 40px;
 	color: #FFF;
 	width:300px;
+	border: 2px solid #A92104;
 	/*border-radius: 3px 3px 0px 0px;*/
 
 }
@@ -35,8 +62,9 @@
 	border-radius: 50%;
 	line-height: 25px;
 	text-align: center;
-	background: #97A719;
-	margin-top: 8px;
+	background: #800300;
+    border: 2px solid #540401;
+    margin-top: 6px;
 	font-size: 13px;
 	padding: 0px;
 }
@@ -47,16 +75,31 @@
 	background: #332828; 
 	color: #FFF;
 	padding: 0px 15px;
+	overflow-y:auto;
+}
+
+.takeanote-body ul{
+	margin: 20px 0px;
+	padding: 0px;
+}
+
+.takeanote-body ul li{
+	margin: 10px 0px;
+	padding: 10px;
+	list-style: none;
+	border: 1px solid #CCC;
 }
 
 .takeanote-footer{
 	border: 1px solid #332828;
-	text-align: center;
+	text-align: right;
 	background: #291E1E;
 	color: #FFF;
 	height: 25px;
-	font-size: 14px;
+	font-size: 12px;
+	font-family: calibri;
 	line-height: 25px;
+	padding: 0px 15px;
 }
 
 .takeanote-footer p{
